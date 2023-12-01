@@ -1,18 +1,23 @@
 use regex::Regex;
 use std::fs::File;
 use std::io::{self, BufRead};
-use std::path::Path;
 
 fn main() {
-    let input_file_name = "ressources/input1";
+    let input_file_name = "ressources/input";
     let file = File::open(input_file_name).unwrap();
     let lines = io::BufReader::new(file).lines();
 
-    let mut first_digit = 11;
-    let mut last_digit = 0;
+    let mut first_digit;
+    let mut last_digit;
     let mut sum = 0;
 
-    let re_digits = Regex::new(r"(one|two|three|four|five|six|seven|eight|nine|\d)").unwrap();
+    let re_string = r"(one|two|three|four|five|six|seven|eight|nine|\d)";
+    let rre_string = r")one|two|three|four|five|six|seven|eight|nine|d\(";
+    let rev_re_string = rre_string.chars().rev().collect::<String>();
+    println!("{}", rev_re_string);
+    //let re_digits = Regex::new(r"(\d)").unwrap();
+    let re_digits = Regex::new(re_string).unwrap();
+    let rev_re_digits = Regex::new(&rev_re_string).unwrap();
 
     for line in lines {
         
@@ -21,16 +26,23 @@ fn main() {
             last_digit = 0;
             println!("{}", line_str);
 
-            for cap in re_digits.captures_iter(&line_str) {
-                let (_,[digit_str]) = cap.extract();
-                print!("{} = ", digit_str);
-                let digit = get_digit(digit_str);
-                print!("{}, ", digit);
+            for cap in re_digits.captures_iter(&line_str).take(1) {
+                let (_, [digit_str]) = cap.extract();
+                //print!("{} = ", digit_str);
+                first_digit = get_digit(digit_str);
+                /*print!("{}, ", digit);
                     last_digit = digit;
                     if first_digit == 11 {
                         first_digit = digit;
                     }
-                
+                */
+            }
+            let rev_line_str = line_str.chars().rev().collect::<String>();
+            println!("{}", rev_line_str);
+            for cap in rev_re_digits.captures_iter(&rev_line_str).take(1) {
+                let (_, [digit_str]) = cap.extract();
+                let rev_digit_str = digit_str.chars().rev().collect::<String>();
+                last_digit = get_digit(&rev_digit_str);
             }
             println!("\n{}{}", first_digit,last_digit);
             if first_digit != 11 {
