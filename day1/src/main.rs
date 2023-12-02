@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::{self, BufRead};
 
 fn main() {
-    let input_file_name = "ressources/input";
+    let input_file_name = "resources/input";
     let file = File::open(input_file_name).unwrap();
     let lines = io::BufReader::new(file).lines();
 
