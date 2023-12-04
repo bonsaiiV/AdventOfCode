@@ -42,7 +42,6 @@ fn main(){
             if rel_numbers.len() == 2 {
                 sum2 += rel_numbers.iter().product::<usize>();
             }
-                    
         }
 
         prev_line = current_line;
