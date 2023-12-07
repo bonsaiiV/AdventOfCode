@@ -5,10 +5,8 @@ fn main() {
     let read_input = io::BufReader::new(File::open("resources/input").unwrap());
     let hands = read_input.lines().map(|line| {
         let line_str = line.unwrap();
-        let mut line_chars = line_str.chars();
-        let hand = line_chars.clone().take(5);
-        line_chars.nth(5);
-        (hand.collect::<String>(), line_chars.collect::<String>().parse::<usize>().unwrap())
+        let (hand, points) = line_str.split_once(' ').unwrap();
+        (hand.to_owned(), points.parse::<usize>().unwrap())
     });
     let mut hands_vec = hands.collect::<Vec<(String,usize)>>();
     hands_vec.sort_by_cached_key(|(hand,_)| _get_score2(hand));
@@ -50,7 +48,7 @@ fn to_index(card: char) -> usize{
         digit => <u32 as TryInto<usize>>::try_into(digit.to_digit(10).unwrap()).unwrap()-1,
     }
 }
-
+//rewrite
 fn _get_score2(hand: &String) -> usize{
     let mut counts = std::iter::repeat(0).take(14).collect::<Vec<usize>>();
     let hand_score = hand.chars().map(to_index).collect::<Vec<usize>>();
