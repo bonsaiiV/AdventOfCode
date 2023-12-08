@@ -1,0 +1,109 @@
+use regex::Regex;
+use std::collections::HashMap;
+
+use std::io::{self, BufRead};
+use std::fs::File;
+
+fn main() {
+    let re = Regex::new(r"(.{3}) = \((.{3}), (.{3})\)").unwrap();
+    let re_starts = Regex::new(r".{2}A").unwrap();
+    let re_goals = Regex::new(r".{2}Z").unwrap();
+    let input_reader = io::BufReader::new(File::open("resources/input").unwrap());
+    let mut lines = input_reader.lines();
+    let ref_instructions = lines.next().unwrap().unwrap();
+    lines.next();
+    let nodes_vec = lines.map(|line| {
+        let line_str = line.unwrap();
+        //println!("{}",line_str);
+        let (_, [node, left, right]) = re.captures(&line_str).unwrap().extract();
+        (node.to_owned(),(left.to_owned(),right.to_owned()))
+    }).collect::<Vec<(String,(String,String))>>();
+    let nodes_map = nodes_vec.iter().map(|(node, (left,right))| (node, (get_index(left,&nodes_vec).unwrap(),get_index(right,&nodes_vec).unwrap()))).collect::<Vec<(&String,(usize,usize))>>();
+    let mut currents = nodes_vec.iter()
+        .filter(|(node,_)| re_starts.is_match(node))
+        .map(|(node,_)| get_index(node, &nodes_vec).unwrap())
+        .collect::<Vec<usize>>();
+    let mut goals = nodes_vec.iter()
+        .filter(|(node,_)| re_goals.is_match(node))
+        .map(|(node,_)| get_index(node, &nodes_vec).unwrap())
+        .collect::<Vec<usize>>();
+    goals.push(273);
+    let mut instructions = ref_instructions.chars();
+    let mut step = 0;
+    let mut next_instruction;
+    println!("{:?}", goals);
+    for val in &currents{ get_cycles(*val, &ref_instructions, &nodes_map, &goals);}
+    return;
+    while !currents.iter().all(|index| goals.contains(index)) {
+        //println!("{:?}", currents);
+        step += 1;
+        if let Some(tmp_instruction) = instructions.next(){
+            next_instruction = tmp_instruction;
+        }else{
+            instructions = ref_instructions.chars();
+            next_instruction = instructions.next().unwrap();
+        }
+        currents = currents.iter().map(|current| match next_instruction{
+            'L' => nodes_map.get(*current).unwrap().1.0,
+            'R' => nodes_map.get(*current).unwrap().1.1,
+            _ => None.unwrap(),
+        }).collect::<Vec<usize>>();
+    }
+    println!("{}",step);
+    
+}
+
+fn get_index (val: &str, target: &Vec<(String,(String,String))>)-> Option<usize>{
+    for i in 0..target.len(){
+        if val == target.get(i).unwrap().0 {
+            return Some(i);
+        }
+    }
+    return None;
+}
+
+fn get_cycles(start:usize, ref_instructions: &String, nodes_map: &Vec<(&String,(usize,usize))>, goals:&Vec<usize>) {
+    println!("start from {}",start);
+    let mut seen_values = HashMap::new();
+    let mut current = start;
+    let mut instructions = ref_instructions.chars();
+    let mut step = 0;
+    let mut next_instruction;
+    let mut goal_indexes = Vec::new();
+    let mut last = (current,0);
+    let mut pos_in_instructions = 1;
+    //println!("{:?}", goals);
+    let mut exit = false;
+    while true | !seen_values.iter().any(|((seen, pos),_)| {
+            last=(current,pos_in_instructions); 
+            //println!("seen:{}, pos: {}",seen, pos);
+            *seen == current && *pos==pos_in_instructions
+        }) {
+        //println!("{}",last);
+        seen_values.insert((current,pos_in_instructions), step);
+        pos_in_instructions += 1;
+        //println!("{}", current);
+        if goals.iter().any(|goal| *goal==current){
+            println!("found goal");
+            println!("In {} rounds, at {}/{}", step/ref_instructions.len(), pos_in_instructions, ref_instructions.len());
+            goal_indexes.push(step);
+            if exit {break;}else {exit = true;}
+        }
+        step += 1;
+        if let Some(tmp_instruction) = instructions.next(){
+            next_instruction = tmp_instruction;
+        }else{
+            pos_in_instructions = 0;
+            instructions = ref_instructions.chars();
+            next_instruction = instructions.next().unwrap();
+        }
+        current = match next_instruction{
+            'L' => nodes_map.get(current).unwrap().1.0,
+            'R' => nodes_map.get(current).unwrap().1.1,
+            _ => None.unwrap(),
+        };
+    }
+    let offset = seen_values.get(&last).unwrap();
+    println!("In {} rounds", step/ref_instructions.len());
+    println!("{}+{}:{:?}", step-offset, offset, goal_indexes)
+}
