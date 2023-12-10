@@ -41,7 +41,7 @@ fn main() {
         .nth(0).unwrap().0.clone();
     let mut current_direction = N;
     area_map.insert(current_pos, 1);
-    current_pos = current_pos + V2 {x:0,y:-1};
+    current_pos = current_pos + N;
     let mut current_pipe = pos_to_pipe_map.get(&current_pos).unwrap();
     let mut cycle_len = 1;
     //let mut turns = (0,0); this was used to figure out, whether i need the right or left side of
