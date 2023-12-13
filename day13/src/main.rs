@@ -10,19 +10,10 @@ fn main() {
         pattern_nr += 1;
         let lines_set = pattern.lines()
             .enumerate()
-            .fold(HashMap::new(), |mut lines_map: HashMap<String, HashSet<usize>>, (current_line_nr, line)| {
-                if let Some(line_nrs) = lines_map.get_mut(line){
-                    line_nrs.insert(current_line_nr);
-                }else {
-                    let lines_set = [current_line_nr].iter()
-                        .map(|line_nr| *line_nr)
-                        .collect::<HashSet<_>>();
-                    lines_map.insert(line.to_string(), lines_set);
-                }
-                lines_map
-            }).iter().map(|(line, line_nr_set)| line_nr_set.clone()).collect::<Vec<_>>();
+            .map(|(pos, line)| (pos, line.to_string()))
+            .collect::<HashMap<usize, String>>();
         let lines_in_pattern = pattern.lines().count();
-        if let Some(symmetry) = get_symmetries(&lines_set, lines_in_pattern).iter().next(){
+        if let Some(symmetry) = get_symmetries2(&lines_set, lines_in_pattern).iter().next(){
             result1 += symmetry * 100;
             println!("added as horizontal");
         }
@@ -44,9 +35,11 @@ fn main() {
             line_len = line.len();
             get_symmetries(&chars_set, line.len()) 
 
-        }).collect::<Vec<HashSet<usize>>>();
-        for pos in 0..line_len{
-            if line_symmetries.iter().all(|symmetries| symmetries.iter().any(|sym_pos| *sym_pos==pos)){
+        }).collect::<Vec<HashMap<usize,usize>>>();
+        for pos in 1..line_len{
+            if line_symmetries.iter()
+                .map(|symmetries| symmetries.get(&pos).unwrap())
+                .sum::<usize>()==2{
                 println!("added as vertical");
                 result1 += pos;
             }
@@ -56,40 +49,52 @@ fn main() {
     println!("{}", result1);
 }
 
-fn get_symmetries2( pattern_set:&HashMap<String, HashSet<usize>>, pattern_len: usize) -> HashSet<usize>{
+fn get_symmetries( pattern_set:&Vec<HashSet<usize>>, pattern_len: usize) -> HashMap<usize, usize>{
+    let mut ret = HashMap::new();
+    for symmetry_pos_candidate in 0..pattern_len-1{
+         let smudges = pattern_set.iter().map(|token_nrs| {
+            token_nrs.iter().map(|token_nr| {
+                if *token_nr <= (symmetry_pos_candidate)*2+1 
+                    && 2*symmetry_pos_candidate+1-token_nr<pattern_len{
+                    if token_nrs.contains(&(2*symmetry_pos_candidate+1-token_nr)) {0}else{1}
+                }else {
+                    0
+                }
+            }).sum::<usize>()
+        }).sum::<usize>();
+        ret.insert(symmetry_pos_candidate+1, smudges);
+        
+    }
+    ret
+}
+
+fn get_symmetries2( pattern_set:&HashMap<usize, String>, pattern_len: usize) -> HashSet<usize>{
     let mut ret = HashSet::new();
     for symmetry_pos_candidate in 0..pattern_len-1{
-         if pattern_set.iter().all(|token_nrs| {
-            token_nrs.iter().all(|token_nr| {
-                if *token_nr <= (symmetry_pos_candidate)*2 
-                    && 2*symmetry_pos_candidate-token_nr+1<pattern_len{
-                    token_nrs.contains(&(2*symmetry_pos_candidate -token_nr+1))
+         if pattern_set.iter().map(|(token_nr, line)| {
+            if *token_nr <= (symmetry_pos_candidate)*2+1 
+                && 2*symmetry_pos_candidate+1-token_nr<pattern_len{
+                let cmp_line = pattern_set.get(&(2*symmetry_pos_candidate+1 -token_nr)).unwrap();
+                if *cmp_line == *line{
+                    0
                 }else {
-                    true
+                    let diff = get_diff(line, cmp_line);
+                    /*
+                    if diff == 1{
+                        println!("{}\n{}", cmp_line, line);
+                    }
+                    */
+                    diff
                 }
-            })
-        }){
+           }else {
+                0
+           }
+        }).sum::<usize>() == 2{
             ret.insert(symmetry_pos_candidate+1);
         }
     }
     ret
 }
-
-fn get_symmetries( pattern_set:&Vec<HashSet<usize>>, pattern_len: usize) -> HashSet<usize>{
-    let mut ret = HashSet::new();
-    for symmetry_pos_candidate in 0..pattern_len-1{
-         if pattern_set.iter().all(|token_nrs| {
-            token_nrs.iter().all(|token_nr| {
-                if *token_nr <= (symmetry_pos_candidate)*2 
-                    && 2*symmetry_pos_candidate-token_nr+1<pattern_len{
-                    token_nrs.contains(&(2*symmetry_pos_candidate -token_nr+1))
-                }else {
-                    true
-                }
-            })
-        }){
-            ret.insert(symmetry_pos_candidate+1);
-        }
-    }
-    ret
+fn get_diff(line1: &String, line2: &String) -> usize{
+    line1.chars().zip(line2.chars()).map(|(char1, char2)| if char1 == char2 {0}else{1}).sum()
 }
