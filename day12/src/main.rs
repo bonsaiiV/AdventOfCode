@@ -9,16 +9,16 @@ fn main() {
     let input_reader = io::BufReader::new(File::open("resources/input").unwrap());
     let mut result1 = 0;
     let mut result2 = 0;
-    let mut line_nr = 0;
+    //let mut line_nr = 0;
     for line in input_reader.lines(){
-        println!("{}", line_nr);
-        line_nr += 1;
+        //println!("{}", line_nr);
+        //line_nr += 1;
         let line_str = line.unwrap();
         let (spring_sym, spring_block) = line_str.split_once(' ').unwrap();
         let spring_groups = spring_block.split(',')
             .map(|group| group.parse::<usize>().unwrap())
             .collect::<Vec<_>>();
-        let line_result1 = part1::solve_line(spring_sym, &spring_groups);
+        let line_result1 = part2::solve_line(spring_sym, &spring_groups);
         result1 += line_result1;
         let spring_groups2 = repeat(spring_groups.iter()).take(5).flatten().map(|val| *val).collect::<Vec<usize>>();
         let spring_sym2 = repeat(format!("?{}", spring_sym).chars()).take(5).flatten().skip(1).collect::<String>();
