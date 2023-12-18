@@ -14,7 +14,7 @@ struct HeatCell{
 struct FrontPos{
     x: usize,
     y: usize,
-    //history: Vec<(usize, usize)>,
+    history: Vec<(usize, usize)>,
     direction: char,
     straight_moved: usize,
     total_heat_loss: usize,
@@ -51,51 +51,48 @@ fn main() {
         height += 1;
         heat_map.push(next_line);
     });
-    println!("width: {}, height: {}", width, height);
     let mut front = BinaryHeap::new();
-    front.push(FrontPos{x:0,y:0, direction: 'S', straight_moved: 0, total_heat_loss: 0});
-    let mut cl = 0;
-    //front.push(FrontPos{x:0,y:0, history: Vec::from([(0,0)]), direction: 'S', straight_moved: 0, total_heat_loss: 0});
-    let mut maxfl = front.len();
+    //front.push(FrontPos{x:0,y:0, direction: 'S', straight_moved: 0, total_heat_loss: 0});
+    front.push(FrontPos{x:0,y:0, history: Vec::from([(0,0)]), direction: 'S', straight_moved: 0, total_heat_loss: 0});
     while heat_map[height-1][width-1].heat_loss_map.len() == 0 {
-        if front.len() > maxfl {
-            maxfl = front.len();
-        }
-        let tmp = front.peek().unwrap().total_heat_loss;
-        if tmp > cl{
-            cl = tmp;
-            println!("{} with fl: {}", cl, front.len());
-        }
-        //println!("{:?}", front.peek());
-        //println!("{:?}", front);
+    //while front.len() > 0{
+        /*println!("{:?}", front.peek().unwrap().history);
+        println!("{:?}", front.peek().unwrap().history
+            .iter()
+            .map(|&(x, y)| heat_map[x][y].loss)//.collect::<Vec<usize>>());
+            .sum::<usize>());*/
         unvisited_neighbors(front.pop().unwrap(), &mut heat_map, &mut front, width, height);
     }
-    println!("{}", maxfl);
-    println!("{}", heat_map[height-1][width-1].heat_loss_map.values().next().unwrap());
+    println!("{}", heat_map[height-1][width-1].heat_loss_map.values().min().unwrap());
 }
 fn visit_neighbor(next_cell_pos: (usize,usize), heat_map: &mut Vec<Vec<HeatCell>>, direction: char, front: &mut BinaryHeap<FrontPos>, drop: &FrontPos){
     let mut moved = 1;
     if drop.direction == direction{
-        if drop.straight_moved < 3 {
+        if drop.straight_moved < 10 {
             moved = drop.straight_moved + 1;
         }else {
             return
         }
+    }else {
+        if true && drop.straight_moved < 4{
+            return
+        }
     }
-    let next_cell = heat_map.get_mut(next_cell_pos.1).unwrap().get_mut(next_cell_pos.0).unwrap();
-    for i in 1..moved+1{
-        if let Some(prev_heat_loss) = next_cell.heat_loss_map.get(&(direction, i)){
+    //let next_cell = heat_map.get_mut(next_cell_pos.1).unwrap().get_mut(next_cell_pos.0).unwrap();
+    let next_cell = &mut heat_map[next_cell_pos.0][next_cell_pos.1];
+    //for i in 1..moved+1{
+        if let Some(prev_heat_loss) = next_cell.heat_loss_map.get(&(direction, moved)){
             if *prev_heat_loss <= drop.total_heat_loss + next_cell.loss{
                 return
             }
         }
-    }
-    //let mut new_history = drop.history.clone();
-    //new_history.push(next_cell_pos);
+    //}
+    let mut new_history = drop.history.clone();
+    new_history.push(next_cell_pos);
     front.push(FrontPos{
         x: next_cell_pos.0, 
         y:next_cell_pos.1, 
-        //history: new_history,
+        history: new_history,
         direction: direction, 
         straight_moved: moved,
         total_heat_loss: drop.total_heat_loss + next_cell.loss});
