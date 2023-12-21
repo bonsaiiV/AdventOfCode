@@ -83,7 +83,6 @@ fn main() {
         .filter(|(dist, marker)| *marker == 2 && dist % 2 == 1)
         .count() as isize;
     let super_size = (steps-65) / field_size.x;
-    println!("{}", super_size);
     let mut result2 = 0;
     for x in 1..super_size +1 {
         if x % 2 == 1 {
@@ -101,7 +100,7 @@ fn main() {
             .flat_map(|y| (0..field_size.x).zip(repeat(y)))
             .filter(|&(x, y)| {
                 field[y as usize][x as usize].1 == 2
-                    && (V2 { x: x, y: y } - starting_pos).abs() >= starting_pos.x
+                    && (V2 { x: x, y: y } - starting_pos).abs() > starting_pos.x
                     && (x+y)%2 == 0
             }).collect::<Vec<_>>();
     let even_corners_count = even_corners.len() as isize;
@@ -109,17 +108,9 @@ fn main() {
             .flat_map(|y| (0..field_size.x).zip(repeat(y)))
             .filter(|&(x, y)| {
                 field[y as usize][x as usize].1 == 2
-                    && (V2 { x: x, y: y } - starting_pos).abs() >= starting_pos.x
+                    && (V2 { x: x, y: y } - starting_pos).abs() > starting_pos.x
                     && (x+y)%2 == 1
             }).collect::<Vec<_>>();
-    for y in 0..field_size.y{
-        for x in 0..field_size.x{
-            if odd_corners.contains(&(x, y)){
-                print!(".");//{}", field[y as usize][x as usize].0 % 2);
-            }else{print!("#");}
-        }
-        println!();
-    }
     let odd_corners_count = odd_corners.len() as isize;
     let corner_diff;
     let missing_corners;
@@ -140,13 +131,5 @@ fn main() {
             })
             .count() as isize;
     */
-    let correct_res:isize = 625587097150084;
-    println!("free even: {}, free odd: {}, diff: {}", free_even, free_odd, free_even-free_odd);
-    println!("corners even: {}, corners odd: {}, diff: {}", even_corners_count, odd_corners_count, even_corners_count-odd_corners_count);
     println!("{}", result2);
-    let error5 = result2 - correct_res;
-    println!("Error: {}", error5);
-    let rel_error5 = error5 / (super_size + 1);
-    let rel_error_free_even = error5/ free_even;
-    println!("Relative Errors: super_size: {}, free even: {}", rel_error5, rel_error_free_even);
 }
