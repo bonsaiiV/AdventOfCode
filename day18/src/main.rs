@@ -79,9 +79,14 @@ fn main() {
     rel_ypos.sort();
     let mut last_ypos = -10000000;
     let mut result2 = 0;
+    let mut one_off1 = 0;
+    let mut one_off2 = 0;
+    let mut one_off3 = 0;
+    let mut one_off4 = 0;
     for &ypos in rel_ypos.iter(){
         for in_range in in_ranges.iter_mut(){
             result2 += (ypos-last_ypos) * (in_range.1-in_range.0+1);
+            one_off4 += ypos-last_ypos;
         }
         for section in dig_map2.iter().filter(|&(start,_)| start.y == ypos).map(|&(start,end)| (start.x, end.x)) {
             let mut new_ranges = Vec::new();
@@ -97,16 +102,19 @@ fn main() {
                     low_extension = Some(in_range.0-section.0);
                 }else if in_range.0 == section.0 && in_range.1 == section.1{
                     skip_section=true;
-                    result2+= section.1-section.0+1;
+                    result2 += section.1-section.0+1;
+                    one_off1 += section.1-section.0+1;
                 }else if in_range.1 == section.1{
                     new_ranges.push((in_range.0, section.0));
                     //low_extension = Some(in_range.0-section.0);
-                    result2+= section.1-section.0;
+                    result2 += section.1-section.0;
+                    one_off2 += section.1-section.0;
                     skip_section=true;
                 }else if in_range.0 == section.0{
                     new_ranges.push((section.1, in_range.1));
                     //high_extension = Some(in_range.1-section.1);
-                    result2+= section.1-section.0;
+                    result2 += section.1-section.0;
+                    one_off3 += section.1-section.0;
                     skip_section=true;
                 }else if in_range.0 < section.0 && in_range.1 > section.1{
                     new_ranges.push((section.1, in_range.1));
@@ -131,6 +139,21 @@ fn main() {
         last_ypos = ypos;
     }
     println!("{}", result2);
+    println!("{}", result2 - one_off1);
+    println!("{}", result2 - one_off2);
+    println!("{}", result2 - one_off3);
+    println!("{}", result2 - one_off4);
+    println!("{}", result2 - one_off3 - one_off1);
+    println!("{}", result2 - one_off3 - one_off2);
+    println!("{}", result2 - one_off2 - one_off1);
+    println!("{}", result2 - one_off4 - one_off1);
+    println!("{}", result2 - one_off3 - one_off4);
+    println!("{}", result2 - one_off2 - one_off4);
+    println!("{}", result2 - one_off3 - one_off1 - one_off2);
+    println!("{}", result2 - one_off4 - one_off1 - one_off2);
+    println!("{}", result2 - one_off3 - one_off4 - one_off2);
+    println!("{}", result2 - one_off3 - one_off1 - one_off4);
+    println!("{}", result2 - one_off3 - one_off1 - one_off4 - one_off2);
 }
 fn right(dir: V2) -> V2{
     match dir {

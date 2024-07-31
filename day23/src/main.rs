@@ -1,5 +1,6 @@
 mod part1;
 mod vector;
+use std::cmp::max;
 use crate::vector::{E, N, S, V2, W};
 use std::collections::HashMap;
 use std::fs::File;
@@ -107,37 +108,31 @@ fn part2_solve(mut forest_map: Vec<Vec<Marker>>, starting_pos: V2) {
         }
     }
     println!("Graph with {} nodes created:", graph.len());
-    let mut path_map = graph
+    /*let mut path_map = graph
         .keys()
         .map(|key| *key)
         .zip(repeat(Vec::new()))
-        .collect::<HashMap<usize, Vec<(String, usize)>>>();
-    let mut front = Vec::from([(2, "".to_string(), 0)]);
+        .collect::<HashMap<usize, Vec<(String, usize)>>>();*/
+    let mut best = 0;
+    let mut front = Vec::from([(2, vec![2], 0)]);
     while let Some((node, path, dist)) = front.pop() {
-        graph.get(&node).unwrap().iter().enumerate().for_each({
-            |(n, (neighbor, edge_len))| {
-                if !path_map
-                    .get(neighbor)
-                    .unwrap()
+        if node == goal {
+            if dist > best{
+                best = dist;
+                println!("{}", best);
+            }
+        }
+        graph.get(&node).unwrap().iter().for_each({
+            |&(neighbor, edge_len)| {
+                if !path
                     .iter()
-                    .any(|path_label| path.starts_with(&path_label.0))
+                    .any(|visited_node| neighbor == *visited_node)
                 {
-                    let new_path = format!("{}{}", path, n);
-                    front.push((*neighbor, new_path.clone(), dist + edge_len));
-                    path_map
-                        .get_mut(neighbor)
-                        .unwrap()
-                        .push((new_path, dist + edge_len));
+                    let mut new_path = path.clone();
+                    new_path.push(node);
+                    front.push((neighbor, new_path, dist + edge_len));
                 }
             }
         })
     }
-    let result = &path_map
-        .get(&goal)
-        .unwrap()
-        .iter()
-        .map(|(_, dist)| *dist)
-        .max()
-        .unwrap();
-    println!("{:?}", result);
 }

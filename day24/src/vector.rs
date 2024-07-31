@@ -1,46 +1,94 @@
-use std::ops::{Add, AddAssign, Mul, Sub};
+use num::{abs, Signed};
+use std::ops::{Add, AddAssign, Div, Mul, Neg, Sub};
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct V2 {
-    pub x: f64,
-    pub y: f64,
+pub struct V3<T: Copy> {
+    pub x: T,
+    pub y: T,
+    pub z: T,
 }
-impl Add for V2 {
+
+impl<T> Neg for V3<T>
+where
+    T: Copy + Neg<Output = T>,
+{
+    type Output = Self;
+    fn neg(self) -> Self {
+        Self {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
+    }
+}
+impl<T> Add for V3<T>
+where
+    T: Copy + Add<Output = T>,
+{
     type Output = Self;
     fn add(self, other: Self) -> Self {
         Self {
             x: self.x + other.x,
             y: self.y + other.y,
+            z: self.z + other.z,
         }
     }
 }
-impl AddAssign for V2 {
+impl<T> AddAssign for V3<T>
+where
+    T: Copy + Add<Output = T>,
+{
     fn add_assign(&mut self, other: Self) {
         *self = Self {
             x: self.x + other.x,
             y: self.y + other.y,
+            z: self.z + other.z,
         };
     }
 }
-impl Sub for V2 {
-    type Output = Self;
+impl<T> Sub for V3<T>
+where
+    T: Copy + Sub<Output = T>,
+{
+    type Output = V3<T>;
     fn sub(self, other: Self) -> Self {
         Self {
             x: self.x - other.x,
             y: self.y - other.y,
+            z: self.z - other.z,
         }
     }
 }
-impl Mul<f64> for V2 {
+impl<T> Div<T> for V3<T>
+where
+    T: Copy + Div<Output = T>,
+{
     type Output = Self;
-    fn mul(self, other: f64) -> Self {
+    fn div(self, other: T) -> Self {
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+            z: self.z / other,
+        }
+    }
+}
+impl<T> Mul<T> for V3<T>
+where
+    T: Copy + Mul<Output = T>,
+{
+    type Output = Self;
+    fn mul(self, other: T) -> Self {
         Self {
             x: self.x * other,
             y: self.y * other,
+            z: self.z * other,
         }
     }
 }
-impl V2 {
-    pub fn abs(&self) -> f64 {
-        f64::abs(self.x) + f64::abs(self.y)
+impl<T> V3<T>
+where
+    T: Copy + Signed,
+{
+    pub fn manhatten(&self) -> T {
+        num::abs(self.x) + abs(self.y) + abs(self.z)
     }
 }

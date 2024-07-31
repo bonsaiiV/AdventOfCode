@@ -1,82 +1,72 @@
 use regex::Regex;
+
 use std::fs::File;
 use std::io::{self, BufRead};
+//mod part1;
+mod part2;
 mod vector;
-use crate::vector::V2;
-use std::iter::repeat;
+use crate::vector::V3;
+//use num::integer::sqrt;
 
-#[derive(Debug)]
-struct Storm {
-    support: V2,
-    direction: V2,
+/*type V3 = vector::V3<f64>;
+impl V3 {
+    fn abs(&self) -> f64 {
+        (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+    }
+}*/
+#[derive(Debug, Clone, PartialEq, Copy)]
+struct Storm<T: Copy> {
+    support: V3<T>,
+    direction: V3<T>,
 }
 fn main() {
     let re_line = Regex::new(r"(-?\d+), (-?\d+), (-?\d+) @ (-?\d+), (-?\d+), (-?\d+)").unwrap(); //\@\w(\d+),\w(\d+),\w(\d+)").unwrap();
     let input_reader = io::BufReader::new(File::open("resources/input").unwrap());
-    let (range_max, range_min);
-    {range_min = 200000000000000.0; range_max = 400000000000000.0;}
-    /*{
-        range_min = 7.0;
-        range_max = 27.0;
-    }*/
-    let mut hail_storms = Vec::new();
+    let mut float_storms = Vec::new();
+    let mut i_storms = Vec::new();
     for line_opt in input_reader.lines() {
         let line = line_opt.unwrap();
         let line_cap = re_line.captures(&line).unwrap();
-        let nums = line_cap
+        let float_nums = line_cap
             .iter()
             .skip(1)
             .map(|cap| cap.unwrap().as_str().parse::<f64>().unwrap())
             .collect::<Vec<_>>();
-        let hail = Storm {
-            support: V2 {
-                x: nums[0],
-                y: nums[1],
+        let float_hail = Storm {
+            support: V3 {
+                x: float_nums[0],
+                y: float_nums[1],
+                z: float_nums[2],
             },
-            direction: V2 {
-                x: nums[3],
-                y: nums[4],
+            direction: V3 {
+                x: float_nums[3],
+                y: float_nums[4],
+                z: float_nums[5],
             },
         };
-        hail_storms.push(hail);
+        float_storms.push(float_hail);
+        let i_nums = line_cap
+            .iter()
+            .skip(1)
+            .map(|cap| cap.unwrap().as_str().parse::<isize>().unwrap())
+            .collect::<Vec<_>>();
+        let i_hail: Storm<isize> = Storm {
+            support: V3 {
+                x: i_nums[0],
+                y: i_nums[1],
+                z: i_nums[2],
+            },
+            direction: V3 {
+                x: i_nums[3],
+                y: i_nums[4],
+                z: i_nums[5],
+            },
+        };
+        i_storms.push(i_hail);
     }
-    let result1 = hail_storms
-        .iter()
-        .flat_map(|storm_other| hail_storms.iter().zip(repeat(storm_other)))
-        .filter(|(storm1, storm2)| storm1.direction != storm2.direction)
-        .map(|(storm1, storm2)| {
-            let s = (storm2.support.y - storm1.support.y) / storm1.direction.y;
-            let t = storm1.direction.y / storm2.direction.y;
-            (
-                Storm {
-                    support: storm1.support + storm1.direction * s,
-                    direction: storm1.direction,
-                },
-                Storm {
-                    support: storm2.support,
-                    direction: storm2.direction * t,
-                },
-                (s, t),
-                format!("{:?}, and {:?}", storm1, storm2),
-            )
-        })
-        .map(|(storm1, storm2, (s, t), record)| {
-            let delta = (storm2.support.x - storm1.support.x) / (storm1.direction.x - storm2.direction.x);
-            let crossing_at =
-                storm1.support
-                    + storm1.direction
-                        * delta;
-            (
-                crossing_at,
-                (s + delta, t*delta),
-                format!("{}\nhave same y at ({:?},{:?}) and meet at {:?}",record, storm1, storm2, crossing_at),
-            )
-        })
-        .filter(|(pos, (s,t), record)| {
-            println!("{}\nwith s = {} and t = {}.\n", record, s, t);
-            *s >= 0.0 && *t >= 0.0 &&
-            range_min <= pos.x && range_max >= pos.x && range_min <= pos.y && range_max >= pos.y
-        })
-        .count()/2;
-    println!("{:?}", result1);
+    part2::i_pigeonhole_solve(&i_storms);
+    //println!("{}", part2::get_idir_score(&i_storms, V3 { x: 44, y: 305, z: 75 }));
+    //part1::solve(&hail_storms);
+    //part2::bruteforce_direction(&float_storms);
+    //println!("{}", get_dir_score(&hail_storms, V3{x:(-3).try_into().unwrap(), y:1.try_into().unwrap(), z:2.try_into().unwrap()}));
 }
