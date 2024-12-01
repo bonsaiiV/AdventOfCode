@@ -1,8 +1,6 @@
 project('aoc', 'c',
-  version : '0.1',
   default_options : ['warning_level=3'])
 
-exe = executable('aoc', 'aoc.c',
-  install : true)
-
-test('basic', exe)
+include_dir = include_directories('include')
+subdir('src')
+exe = executable('aoc', ['main.c', sources], include_directories : [include_dir])
