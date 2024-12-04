@@ -13,25 +13,22 @@ int get_digit(int* ret, char in){
 	return 0;
 }
 void day03part1(char* filename){
-	int res = 0, line_nr = 1;
+	int res = 0;
 	int digit, a, b;
 	char* line = calloc(80, sizeof(char));
 	size_t i, line_len = 80;
 	FILE* fp = fopen(filename, "r");
 	while (getline(&line, &line_len, fp) != -1) {
-		//printf("line: %d\n", line_nr);
 		i = 0;
 		while (line[i] != 0){
 			a = 0;
 			b = 0;
 			if (!strncmp("mul(", line + i, 4)) {
-				//printf("detected mul at index %ld\n", i);
 				i += 4;
 				while(get_digit(&digit, line[i])){ 
 					a = a * 10 + digit;
 					i++;
 				}
-				//printf("a is %d at %ld\n", a, i);
 				if (a == 0 || line[i] != ','){
 					continue;
 				}
@@ -43,7 +40,6 @@ void day03part1(char* filename){
 				if (b == 0 || line[i] != ')'){
 					continue;
 				}
-				//printf("b is %d\n", a);
 				res += a*b;
 			}
 			i++;
@@ -52,15 +48,14 @@ void day03part1(char* filename){
 	free(line);
 	printf("result: %d\n", res);
 }
-void day03part2(char* input){
-	int res = 0, line_nr = 1;
+void day03part2(char* filename){
+	int res = 0;
 	int digit, a, b;
 	int enabled = 1;
 	char* line = calloc(80, sizeof(char));
 	size_t i, line_len = 80;
 	FILE* fp = fopen(filename, "r");
 	while (getline(&line, &line_len, fp) != -1) {
-		//printf("line: %d\n", line_nr);
 		i = 0;
 		while (line[i] != 0){
 			a = 0;
@@ -74,13 +69,11 @@ void day03part2(char* input){
 				enabled = 0;
 			}
 			if (enabled && !strncmp("mul(", line + i, 4)) {
-				//printf("detected mul at index %ld\n", i);
 				i += 4;
 				while(get_digit(&digit, line[i])){ 
 					a = a * 10 + digit;
 					i++;
 				}
-				//printf("a is %d at %ld\n", a, i);
 				if (a == 0 || line[i] != ','){
 					continue;
 				}
@@ -92,7 +85,6 @@ void day03part2(char* input){
 				if (b == 0 || line[i] != ')'){
 					continue;
 				}
-				//printf("b is %d\n", a);
 				res += a*b;
 			}
 			i++;
