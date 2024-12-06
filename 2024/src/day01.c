@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "globals.h"
 
 int get_input(char* filename, int** ret_a, int** ret_b){
 	size_t len = 0, cap = 8;

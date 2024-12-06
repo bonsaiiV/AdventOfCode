@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "globals.h"
 
-static int dbg = 0;
+#define DBG(...) if (dbg) printf(__VA_ARGS__);
 
 struct rule {
 	int first;
@@ -49,18 +50,18 @@ static int check_update(struct rules_list rules, struct update update, size_t* i
 		second_found = 0;
 		for (j = 0; j < update.len; j++) {
 			if (second_found && update.data[j] == rules.data[i].first) {
-				dbg && printf("failed rule %d|%d\n", rules.data[i].first, rules.data[i].second);
+				DBG("failed rule %d|%d\n", rules.data[i].first, rules.data[i].second);
 				if (index_first)*index_first = j;
 				return 0;
 			}
 			if (update.data[j] == rules.data[i].second) {
-				dbg && printf("found second of rule %d|%d at index %ld\n", rules.data[i].first, rules.data[i].second, i);
+				DBG("found second of rule %d|%d at index %ld\n", rules.data[i].first, rules.data[i].second, i);
 				if (index_second)*index_second = j;
 				second_found = 1;
 			}
 		}
 	}
-	dbg && printf("adding: %d\n", update.data[update.len / 2]);
+	DBG("adding: %d\n", update.data[update.len / 2]);
 	return update.data[update.len / 2];
 }
 
@@ -72,7 +73,7 @@ static void get_rules(FILE* fp, struct rules_list* rules) {
 		if (!strcmp(line, "\n")){
 			break;
 		}
-		dbg && printf("creating rule: %s\n", line);
+		DBG("creating rule: %s\n", line);
 		tok = strtok(line, "|");
 		rule.first = atoi(tok);
 		tok = strtok(0, "|");
@@ -86,13 +87,13 @@ void day05part1(char* filename){
 	struct rules_list rules = rules_create();
 	FILE* fp = fopen(filename, "r");
 	int res = 0;
-	dbg && printf("getting rules\n");
+	DBG("getting rules\n");
 	get_rules(fp, &rules);
 	size_t last_line_len = 8;
 	char* tok, *line = calloc(last_line_len, sizeof(char));
 	struct update update = update_create();
 	while (getline(&line, &last_line_len, fp) != -1) {
-		dbg && printf("line: %s\n", line);
+		DBG("line: %s\n", line);
 		tok = strtok(line, ",");
 		do {
 			update_insert(&update, atoi(tok));

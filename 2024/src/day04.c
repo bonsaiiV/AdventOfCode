@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "globals.h"
 
 struct list {
 	char** data;
@@ -26,7 +27,6 @@ static void list_destroy(struct list* list) {
 	free(list->data);
 }
 const char* XMAS = "XMAS";
-int dbg = 0;
 static int try_rel(struct list lines, size_t len, const char* str, size_t row, size_t col, int diff_row, int diff_col){
 	int fw = 1, rev = 1;
 	for (size_t i = 0; i < len; i++) {

@@ -1,14 +1,16 @@
 
-void day01part1(char input[]);
-void day01part2(char input[]);
-void day02part1(char input[]);
-void day02part2(char input[]);
-void day03part1(char input[]);
-void day03part2(char input[]);
-void day04part1(char input[]);
-void day04part2(char input[]);
-void day05part1(char input[]);
-void day05part2(char input[]);
+#define DECLARE(DAY_NR)\
+void day##DAY_NR##part1(char* filename);\
+void day##DAY_NR##part2(char* filename);
+
+#define DAY_STRUCT(DAY_NR) {day##DAY_NR##part1, day##DAY_NR##part2}
+
+DECLARE(01)
+DECLARE(02)
+DECLARE(03)
+DECLARE(04)
+DECLARE(05)
+DECLARE(06)
 
 
 struct __attribute__((packed)) day {
@@ -17,9 +19,10 @@ struct __attribute__((packed)) day {
 };
 
 struct day daymap[] = {
-	{day01part1, day01part2},
-	{day02part1, day02part2},
-	{day03part1, day03part2},
-	{day04part1, day04part2},
-	{day05part1, day05part2},
+	DAY_STRUCT(01), 
+	DAY_STRUCT(02), 
+	DAY_STRUCT(03), 
+	DAY_STRUCT(04), 
+	DAY_STRUCT(05), 
+	DAY_STRUCT(06), 
 };
