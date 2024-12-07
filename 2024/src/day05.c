@@ -3,8 +3,6 @@
 #include <string.h>
 #include "globals.h"
 
-#define DBG(...) if (dbg) printf(__VA_ARGS__);
-
 struct rule {
 	int first;
 	int second;

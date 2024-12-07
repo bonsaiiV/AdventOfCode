@@ -67,5 +67,6 @@ int main(int argc, char **argv) {
 	}
 	void (**parts) (char[]) = ((void (**) (char[])) &daymap[day-1]) + part - 1;
 	(*parts)(input_file);
+	free(input_file);
 	return 0;
 }

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "globals.h"
 
-#define DBG(...) if (dbg) printf(__VA_ARGS__);
 struct list {
 	char** data;
 	size_t cap;
@@ -82,9 +81,8 @@ void day06part1(char* filename){
 	FILE* fp = fopen(filename, "r");
 	int res = 0;
 	get_input(fp, &lines, &guard_row, &guard_col);
-	int* visited = calloc(lines.line_len * lines.len, sizeof(int));
-	visited[guard_row * lines.line_len + guard_col] = 1;
 	get_delta(dir, &d_row, &d_col);
+	lines.data[guard_row][guard_col] = '1';
 	while (!done) {
 		DBG("guard pos: %ld, %ld\n", guard_col, guard_row);
 		if (guard_row == 0 || guard_row == lines.len-1 || guard_col == 0 || guard_col == lines.line_len) {
@@ -104,12 +102,10 @@ void day06part1(char* filename){
 		DBG("%s", lines.data[i]);
 		for (size_t j = 0; j < lines.line_len; j++) {
 			if (lines.data[i][j] == '1') res++;
-			//res += visited[i * lines.line_len + j];
 		}
 	}
 	printf("result: %d\n", res);
 	list_clean(&lines);
-	free(visited);
 	free(lines.data);
 }
 int test_loop(size_t guard_row, size_t guard_col, int dir, int* visited, struct list lines) {
@@ -128,8 +124,24 @@ void day06part2(char* filename){
 	char tmp;
 	get_input(fp, &lines, &guard_row, &guard_col);
 	size_t const_row = guard_row, const_col = guard_col;
+	get_delta(dir, &d_row, &d_col);
+	while (!done) {
+		DBG("guard pos: %ld, %ld\n", guard_col, guard_row);
+		if (guard_row == 0 || guard_row == lines.len-1 || guard_col == 0 || guard_col == lines.line_len) {
+			done = 1;
+			break;
+		} else if (lines.data[guard_row+d_row][guard_col + d_col] == '#') {
+			dir = (dir+1) % 4;
+			get_delta(dir, &d_row, &d_col);
+		} else {
+			guard_row += d_row;
+			guard_col += d_col;
+			lines.data[guard_row][guard_col] = '1';
+		}
+	}
 	for (size_t i = 0; i < lines.len; i++) {
 		for (size_t j = 0; j < lines.line_len; j++) {
+			if (lines.data[i][j] != '1' || (i == const_row && j == const_col)) continue;
 			guard_row = const_row;
 			guard_col = const_col;
 			dir = 0;
@@ -153,7 +165,7 @@ void day06part2(char* filename){
 					guard_col += d_col;
 					if (test_loop(guard_row, guard_col, dir, visited, lines)){
 						res += 1;
-						printf("loop by placing object at %ld, %ld\n", i, j);
+						DBG("loop by placing object at %ld, %ld\n", i, j);
 						break;
 					}
 					visited[guard_row * lines.line_len + guard_col] += 1 << dir;
@@ -161,7 +173,7 @@ void day06part2(char* filename){
 			}
 			free(visited);
 			lines.data[i][j] = tmp;
-			printf("no loop when placing object at %ld, %ld\n", i, j);
+			DBG("no loop when placing object at %ld, %ld\n", i, j);
 		}
 	}
 	printf("result: %d\n", res);

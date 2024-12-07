@@ -3,7 +3,6 @@
 #include <string.h>
 #include "globals.h"
 
-#define DBG(...) if (dbg) printf(__VA_ARGS__);
 struct list {
 	char** data;
 	size_t cap;
@@ -41,7 +40,6 @@ static void get_input(FILE* fp, struct list* list) {
 	free(line);
 }
 void dayXXpart1(char* filename){
-	dbg = 1;
 	size_t i;
 	struct list lines = list_create();
 	FILE* fp = fopen(filename, "r");
@@ -55,7 +53,6 @@ void dayXXpart1(char* filename){
 	free(lines.data);
 }
 void dayXXpart2(char* filename){
-	dbg = 1;
 	size_t i;
 	struct list lines = list_create();
 	FILE* fp = fopen(filename, "r");
