@@ -88,8 +88,6 @@ void day07part2(char* filename){
 	size_t i;
 	struct list values = list_create();
 	struct list tmp_list, new_values = list_create();
-	DBG("values: %p\n", (void*) values.data);
-	DBG("new_values: %p\n", (void*) new_values.data);
 	FILE* fp = fopen(filename, "r");
 	long long val, sum, tmp, res = 0;
 	int found;
@@ -128,16 +126,15 @@ void day07part2(char* filename){
 		DBG("\n");
 		if (found) {
 			res += sum;
-			DBG(" added\n");
+			DBG("\tadded\n");
 		} else {
-			DBG(" ignored\n");
+			DBG("\tignored\n");
 		}
 		values.len = 0;
 	}
+	fclose(fp);
 	free(line);
 	printf("result: %lld\n", res);
-	DBG("free values: %p\n", (void*) values.data);
 	free(values.data);
-	DBG("free values: %p\n", (void*) new_values.data);
 	free(new_values.data);
 }

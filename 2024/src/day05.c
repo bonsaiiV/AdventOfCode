@@ -99,6 +99,7 @@ void day05part1(char* filename){
 		res += check_update(rules, update, 0, 0);
 		update.len = 0;
 	}
+	fclose(fp);
 	printf("result: %d\n", res);
 	free(rules.data);
 }
@@ -127,6 +128,7 @@ void day05part2(char* filename){
 		res += mid * do_add;
 		update.len = 0;
 	}
+	fclose(fp);
 	printf("result: %d\n", res);
 	free(rules.data);
 }

@@ -70,6 +70,7 @@ static struct list get_input(char* filename) {
 		list_insert(&lines, line);
 		line = calloc(last_line_len, sizeof(char));
 	}
+	fclose(fp);
 	free(line);
 	return lines;
 }

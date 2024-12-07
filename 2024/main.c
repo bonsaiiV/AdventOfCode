@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "days.h"
@@ -18,7 +19,7 @@ int main(int argc, char **argv) {
 				break;
 			case 't':
 				if (!input_file) {
-					input_file = "input/test";
+					input_file = strdup("input/test");
 				}
 				break;
 			case 'v':

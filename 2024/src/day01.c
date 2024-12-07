@@ -22,6 +22,7 @@ int get_input(char* filename, int** ret_a, int** ret_b){
 			b = new_b;
 		}
 	}
+	fclose(fp);
 	*ret_a = a;
 	*ret_b = b;
 	return len;

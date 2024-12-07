@@ -48,6 +48,7 @@ void dayXXpart1(char* filename){
 	get_input(fp, &lines);
 	for (i = 0; i < lines.len; i++) {
 	}
+	fclose(fp);
 	printf("result: %d\n", res);
 	list_clean(&lines);
 	free(lines.data);
@@ -61,6 +62,7 @@ void dayXXpart2(char* filename){
 	get_input(fp, &lines);
 	for (i = 0; i < lines.len; i++) {
 	}
+	fclose(fp);
 	printf("result: %d\n", res);
 	list_clean(&lines);
 	free(lines.data);

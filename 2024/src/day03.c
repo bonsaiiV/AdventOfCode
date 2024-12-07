@@ -46,6 +46,7 @@ void day03part1(char* filename){
 			i++;
 		}
 	}
+	fclose(fp);
 	free(line);
 	printf("result: %d\n", res);
 }
@@ -91,6 +92,7 @@ void day03part2(char* filename){
 			i++;
 		}
 	}
+	fclose(fp);
 	free(line);
 	printf("result: %d\n", res);
 }

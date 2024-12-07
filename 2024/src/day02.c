@@ -41,6 +41,7 @@ void day02part1(char* filename){
 		//printf("finished\n");
 		if (!failed) res++;
 	}
+	fclose(fp);
 	printf("%d\n", res);
 	free(buf);
 }
@@ -114,5 +115,6 @@ void day02part2(char* filename){
 		free(a);
 		//printf("res: %d\n", res);
 	}
+	fclose(fp);
 	printf("%d\n", res);
 }

@@ -104,6 +104,7 @@ void day06part1(char* filename){
 			if (lines.data[i][j] == '1') res++;
 		}
 	}
+	fclose(fp);
 	printf("result: %d\n", res);
 	list_clean(&lines);
 	free(lines.data);
@@ -176,6 +177,7 @@ void day06part2(char* filename){
 			DBG("no loop when placing object at %ld, %ld\n", i, j);
 		}
 	}
+	fclose(fp);
 	printf("result: %d\n", res);
 	list_clean(&lines);
 	free(lines.data);
