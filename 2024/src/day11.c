@@ -81,92 +81,23 @@ void stone_list_add(stone_list* list, stone a) {
 	}
 	stone_list_insert(list, a);
 }
-#define bucket_count 101
 size_t stone_hash(stone in, size_t max) {
 	return in.val % max;
 }
-struct hash_map {
-	stone_list buckets[bucket_count];
-};
-struct hash_map stone_map_create(void){
-	struct hash_map ret;
-	size_t i;
-	for (i = 0; i < bucket_count; i++) {
-		ret.buckets[i] = stone_list_create();
-	}
-	return ret;
-}
-void stone_map_add(struct hash_map* map, stone in) {
-	stone_list_add(map->buckets + stone_hash(in, bucket_count), in);
-}
-size_t stone_max_bucket(struct hash_map* map) {
-	size_t i;
+HASH_MAP(stone)
+size_t stone_max_bucket( stone_set* set) { 
+	size_t i; 
 	size_t len, max = 0;
-	for (i = 0; i < bucket_count; i++) {
-		len = map->buckets[i].len;
+	for (i = 0; i < set->bucket_count; i++) {
+		len = set->buckets[i].len;
 		if (len > max) max = len;
 	}
 	return max;
 }
-size_t stone_map_count(struct hash_map* map) {
-	size_t i;
-	size_t count = 0;
-	for (i = 0; i < bucket_count; i++) {
-		count += map->buckets[i].len;
-	}
-	return count;
-}
-size_t stone_map_sum(struct hash_map* map) {
-	size_t i, j;
-	size_t sum = 0;
-	for (i = 0; i < bucket_count; i++) {
-		for (j = 0; j < map->buckets[i].len; j++) {
-			sum += map->buckets[i].data[j].count;
-		}
-	}
-	return sum;
-}
-int map_get_next(struct hash_map* in_map, stone* ret) {
-	static struct hash_map* map = 0;
-	if (in_map) {
-		map = in_map;
-		return 1;
-	}
-	if (!map) return -1;
-	if (!ret) return -1;
-	static size_t next_bucket = 0;
-	static size_t next_index = 0;
-	while (1) {
-		if (next_bucket >= bucket_count) {
-			next_bucket = 0;
-			next_index = 0;
-			return 2;
-		}
-		if (next_index < map->buckets[next_bucket].len) {
-			*ret = map->buckets[next_bucket].data[next_index++];
-			return 0;
-		} else {
-			next_index = 0;
-			next_bucket++;
-		}
-	} 
-}
-void map_empty(struct hash_map* map) {
-	size_t i;
-	for (i = 0; i < bucket_count; i++) {
-		map->buckets[i].len = 0;
-	}
-}
-void map_clean(struct hash_map* map) {
-	size_t i;
-	for (i = 0; i < bucket_count; i++) {
-		free(map->buckets[i].data);
-	}
-}
 void day11part2(char* filename){
 	size_t i;
-	struct hash_map stones = stone_map_create();
-	struct hash_map tmp, next_stones = stone_map_create();
+	stone_set stones = create_stone_set(101);
+	stone_set tmp, next_stones = create_stone_set(101);
 	stone helper, a;
 	FILE* fp = fopen(filename, "r");
 	DBG("getting input\n");
@@ -179,18 +110,18 @@ void day11part2(char* filename){
 	tok = strtok(line, " ");
 	do {
 		helper.val = atol(tok); helper.count = 1;
-		stone_map_add(&stones, helper);
+		add_to_stone_set(&stones, helper);
 		line = calloc(last_line_len, sizeof(char));
 	} while ((tok = strtok(0, " ")));
 	free(line);
 	fclose(fp);
 	for (i = 0; i < 75; i++) {
-		map_get_next(&stones, 0);
-		while (!map_get_next(0, &a)) {
+		get_next_from_stone_set(&stones, 0);
+		while (!get_next_from_stone_set(0, &a)) {
 			DBG("{%ld, %ld}, ", a.val, a.count);
 			if (a.val == 0) {
 				a.val = 1;
-				stone_map_add(&next_stones, a);
+				add_to_stone_set(&next_stones, a);
 				continue;
 			}
 			int digits = 0;
@@ -207,21 +138,21 @@ void day11part2(char* filename){
 				helper.val = a.val / div;
 				helper.count = a.count;
 				a.val -= helper.val * div;
-				stone_map_add(&next_stones, helper);
-				stone_map_add(&next_stones, a);
+				add_to_stone_set(&next_stones, helper);
+				add_to_stone_set(&next_stones, a);
 			} else {
 				a.val *= 2024;
-				stone_map_add(&next_stones, a);
+				add_to_stone_set(&next_stones, a);
 			}
 		}
 		DBG("\n");
 		tmp = stones;
 		stones = next_stones;
 		next_stones = tmp;
-		map_empty(&next_stones);
+		empty_stone_set(&next_stones);
 	}
 	printf("max bucket: %ld\n", stone_max_bucket(&stones));
-	long long res = stone_map_sum(&stones);
+	long long res = sum_stone_set(&stones);
 	printf("result: %lld\n", res);
-	map_clean(&stones);
+	clean_stone_set(&stones);
 }
