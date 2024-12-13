@@ -51,7 +51,7 @@ void day11part1(char* filename){
 	DBG("getting input\n");
 	get_input(fp, &nums);
 	fclose(fp);
-	for (i = 0; i < 75; i++) {
+	for (i = 0; i < 25; i++) {
 		for (j = 0; j < nums.len; j++) {
 			DBG("%ld, ", nums.data[j]);
 			apply_rules(nums.data[j], &next_nums);
