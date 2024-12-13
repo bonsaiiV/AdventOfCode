@@ -6,12 +6,12 @@ typedef struct toople {
 	int row;
 	int col;
 } position;
-position add(position a, position b) {
+static position add(position a, position b) {
 	position ret = {a.row + b.row, a.col + b.col};
 	return ret;
 }
 
-int position_equal(position a, position b) {
+static int position_equal(position a, position b) {
 	if ((a.row == b.row) & (a.col == b.col)) return 1;
 	return 0;
 }
