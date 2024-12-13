@@ -19,7 +19,7 @@ static void get_input(FILE* fp, long_list* list) {
 	} while ((tok = strtok(0, " ")));
 	free(line);
 }
-void apply_rules(long a, long_list* list) {
+static void apply_rules(long a, long_list* list) {
 	if (a == 0) {
 		long_list_insert(list, 1);
 		return;

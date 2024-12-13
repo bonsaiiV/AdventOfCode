@@ -4,7 +4,7 @@
 #include "globals.h"
 
 static char* digits = "0123456789";
-int get_digit(int* ret, char in){
+static int get_digit(int* ret, char in){
 	for (int i = 0; i < 10; i++) {
 		if (digits[i] == in) {
 			*ret = i;
