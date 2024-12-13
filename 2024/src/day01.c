@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "globals.h"
 
-int get_input(char* filename, int** ret_a, int** ret_b){
+static int get_input(char* filename, int** ret_a, int** ret_b){
 	size_t len = 0, cap = 8;
 	int* new_a, *a = calloc(cap, sizeof(int));
 	int* new_b, *b = calloc(cap, sizeof(int));
