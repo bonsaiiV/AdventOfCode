@@ -85,6 +85,17 @@ size_t stone_hash(stone in, size_t max) {
 	return in.val % max;
 }
 HASH_MAP(stone)
+void unused(void) {
+	count_stone_set(0);
+}
+size_t sum_stone_set( stone_set* set) { size_t i, j; size_t sum = 0;
+	for (i = 0; i < set->bucket_count; i++) {
+		for (j = 0; j < set->buckets[i].len; j++) {
+			sum += set->buckets[i].data[j].count;
+		}
+	}
+	return sum;
+}
 size_t stone_max_bucket( stone_set* set) { 
 	size_t i; 
 	size_t len, max = 0;
