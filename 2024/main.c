@@ -8,18 +8,23 @@ int dbg = 0;
 int main(int argc, char **argv) {
 	size_t part = 0, day = 0;
 	int opt;
-	char* input_file = 0;
-	while ((opt = getopt(argc, argv, "p:d:tv")) != -1) {
+	char* input_data = 0;
+	while ((opt = getopt(argc, argv, "p:d:i:vt")) != -1) {
 		switch (opt) {
 			case 'd':
 				day = atoi(optarg);
-				break;
+			break;
 			case 'p':
 				part = atoi(optarg);
+			break;
+			case 'i':
+				if (!input_data) {
+					input_data = strdup(optarg);
+				}
 				break;
 			case 't':
-				if (!input_file) {
-					input_file = strdup("input/test");
+				if (!input_data) {
+					input_data = strdup("test");
 				}
 				break;
 			case 'v':
@@ -54,18 +59,18 @@ int main(int argc, char **argv) {
 	if (bad_arg) {
 		exit(1);
 	}
-	if (!input_file){
-		input_file = calloc(12, sizeof(char));
-		int digits = snprintf(input_file, 0, "%ld", day);
-		if (digits == 1) {
-			snprintf(input_file, 12, "input/day0%ld", day);
-		} else {
-			snprintf(input_file, 12, "input/day%ld", day);
-		}
+	if (!input_data){
+		input_data = strdup("my_input");
 	}
-	if(optind < argc) {
-		input_file = argv[optind];
+	int data_file_name_len = strlen(input_data);
+	char* input_file = calloc(13+data_file_name_len, sizeof(char));
+	int digits = snprintf(input_file, 0, "%ld", day);
+	if (digits == 1) {
+		snprintf(input_file, 12, "input/day0%ld", day);
+	} else {
+		snprintf(input_file, 12, "input/day%ld", day);
 	}
+	snprintf(input_file+11, 2+data_file_name_len, "/%s", input_data);
 	void (**parts) (char[]) = ((void (**) (char[])) &daymap[day-1]) + part - 1;
 	(*parts)(input_file);
 	free(input_file);
