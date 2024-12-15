@@ -90,10 +90,10 @@ static void get_input(FILE* fp, string_list* list, int* line_len) {
 	*line_len -= 1;
 	free(line);
 }
-int in_bounds( point p, size_t max_row, int max_col) {
+static int in_bounds( point p, size_t max_row, int max_col) {
 	return p.row >= 0 && p.col >= 0 && (size_t) p.row < max_row && p.col < max_col;
 }
-point neighbors[4] = {{-1, 0},{0, -1},{1, 0},{0, 1}};
+static point neighbors[4] = {{-1, 0},{0, -1},{1, 0},{0, 1}};
 void day12part1(char* filename){
 	size_t i, k;
 	int j;
