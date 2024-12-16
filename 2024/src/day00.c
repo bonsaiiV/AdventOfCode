@@ -8,16 +8,28 @@ typedef char* string;
 LIST(string)
 LIST_CLEAN(string)
 
-static void get_input(FILE* fp, string_list* list) {
+static void get_input(FILE* fp, string_list* list, int* line_len) {
+	if (line_len) *line_len = 0;
 	size_t last_line_len = 8;
 	char* line = calloc(last_line_len, sizeof(char));
-	while (getline(&line, &last_line_len, fp) != -1) {
+	int chars_read;
+	while ((chars_read = getline(&line, &last_line_len, fp)) != -1) {
+		if (line_len){
+			if (*line_len){
+				if (*line_len != chars_read) {
+					printf("malformed input\n");
+				}
+			} else {
+				*line_len = chars_read;
+			}
+		}
 		if (!strcmp(line, "\n")){
 			break;
 		}
 		string_list_insert(list, line);
 		line = calloc(last_line_len, sizeof(char));
 	}
+	*line_len -= 1;
 	free(line);
 }
 void dayXXpart1(char* filename){
@@ -26,7 +38,8 @@ void dayXXpart1(char* filename){
 	FILE* fp = fopen(filename, "r");
 	int res = 0;
 	DBG("getting input\n");
-	get_input(fp, &lines);
+	int line_len;
+	get_input(fp, &lines, &line_len);
 	for (i = 0; i < lines.len; i++) {
 	}
 	fclose(fp);

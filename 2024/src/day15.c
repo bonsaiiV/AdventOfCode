@@ -187,7 +187,7 @@ static void get_input_part2(FILE* fp, string_list* list, int* line_len, int_list
 	free(line);
 }
 static char dir_char[4] = {'<','^','>','v'};
-void print_map(string_list map, int line_len, position robot, int dir) {
+static void print_map(string_list map, int line_len, position robot, int dir) {
 	for (int i = 0; (size_t) i < map.len; i++) {
 		for (int j = 0; j < line_len; j++) {
 			if (i == robot.y && j == robot.x) {
@@ -201,7 +201,7 @@ void print_map(string_list map, int line_len, position robot, int dir) {
 		DBG("\n");
 	}
 }
-int position_list_contains(position_list* list, position a) {
+static int position_list_contains(position_list* list, position a) {
 	for (size_t i = 0; i < list->len; i++) {
 		if (list->data[i].x == a.x && list->data[i].y == a.y) {
 			return 1;
