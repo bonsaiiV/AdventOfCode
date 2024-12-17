@@ -85,14 +85,14 @@ void day16part1(char* filename){
 	FILE* fp = fopen(filename, "r");
 	DBG("getting input\n");
 	size_t line_len;
+	get_input(fp, &lines, &line_len);
+	fclose(fp);
+	DBG("map size: %ld,%ld\n", line_len, lines.len);
+	int min_score[lines.len][line_len][4];
 	position end;
 	heading start;
 	start.score = 0;
 	start.dir = 1;
-	get_input(fp, &lines, &line_len);
-	fclose(fp);
-	int min_score[lines.len][line_len][4];
-	DBG("map size: %ld,%ld\n", line_len, lines.len);
 	for (i = 0; i < lines.len; i++) {
 		for (j = 0; j < line_len; j++) {
 			for (dir = 0; dir < 4; dir++) {
