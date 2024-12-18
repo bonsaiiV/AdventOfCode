@@ -9,7 +9,7 @@ typedef struct _position {
 	int x;
 	int y;
 }position;
-position neightbors[4] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+static position neightbors[4] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 static position pos_add(position a, position b) {
 	position ret = {a.x + b.x, a.y + b.y};
 	return ret;
