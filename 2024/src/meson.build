@@ -18,4 +18,5 @@ sources = [
   'src/day17.c',
   'src/day18.c',
   'src/day19.c',
+  'src/day20.c',
 ]
