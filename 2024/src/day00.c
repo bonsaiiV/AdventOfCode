@@ -4,6 +4,16 @@
 #include "globals.h"
 
 
+typedef struct __position{
+	int x;
+	int y;
+} position;
+LIST(position)
+static position neightbors[4] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
+static position pos_add(position a, position b) {
+	position ret = {a.x + b.x, a.y + b.y};
+	return ret;
+}
 typedef char* string;
 LIST(string)
 LIST_CLEAN(string)
@@ -39,8 +49,8 @@ void dayXXpart1(char* filename){
 	int line_len;
 	get_input(fp, &lines, &line_len);
 	fclose(fp);
-	size_t i;
 	DBG("starting solve input\n");
+	size_t i, j;
 	for (i = 0; i < lines.len; i++) {
 	}
 	int res = 0;
