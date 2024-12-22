@@ -115,6 +115,7 @@ void day17part1(char* filename){
 		printf("%d,", output.data[i]);
 	}
 	printf("\n");
+	free(output.data);
 	free(prog.instructions.data);
 }
 static void solve_last_n(program* prog, int n, ll_list* start_a, int_list* output, ll_list* ret) {
@@ -166,4 +167,7 @@ void day17part2(char* filename){
 	}
 	printf("\n");
 	free(prog.instructions.data);
+	free(a_candidates.data);
+	free(next_a_candidates.data);
+	free(output.data);
 }

@@ -66,16 +66,18 @@ static void get_input(FILE* fp, string_list* list, int* line_len, int_list* move
 }
 static position neighbors[4] = {{-1, 0},{0, -1},{1, 0},{0, 1}};
 void day15part1(char* filename){
-	long i, j;
 	string_list map = string_list_create();
 	int_list moves = int_list_create();
 	FILE* fp = fopen(filename, "r");
 	int line_len;
-	int res = 0;
-	position robot, current;
 	DBG("getting input\n");
 	get_input(fp, &map, &line_len, &moves);
+	fclose(fp);
+
 	int do_break = 0;
+	int res = 0;
+	position robot, current;
+	long i, j;
 	DBG("getting robot pos\n");
 	for (i = 0; (size_t) i < map.len && !do_break; i++) {
 		for (j = 0; j < line_len && !do_break; j++) {
@@ -117,7 +119,6 @@ void day15part1(char* filename){
 		}
 		DBG("\n");
 	}
-	fclose(fp);
 	printf("result: %d\n", res);
 	string_list_clean(&map);
 	free(map.data);
@@ -210,17 +211,19 @@ static int position_list_contains(position_list* list, position a) {
 	return 0;
 }
 void day15part2(char* filename){
-	long i, j;
+	DBG("getting input\n");
 	string_list map = string_list_create();
 	int_list moves = int_list_create();
-	FILE* fp = fopen(filename, "r");
 	int line_len;
+	FILE* fp = fopen(filename, "r");
+	get_input_part2(fp, &map, &line_len, &moves);
+	fclose(fp);
+
+	int do_break = 0;
 	int res = 0;
 	position robot, current;
-	DBG("getting input\n");
-	get_input_part2(fp, &map, &line_len, &moves);
-	int do_break = 0;
 	DBG("getting robot pos\n");
+	long i, j;
 	for (i = 0; (size_t) i < map.len && !do_break; i++) {
 		for (j = 0; j < line_len && !do_break; j++) {
 			if (map.data[i][j] == '@'){
@@ -339,7 +342,7 @@ void day15part2(char* filename){
 		}
 		DBG("\n");
 	}
-	fclose(fp);
+	free(boxes.data);
 	printf("result: %d\n", res);
 	string_list_clean(&map);
 	free(map.data);

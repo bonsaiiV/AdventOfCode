@@ -146,6 +146,8 @@ void day16part1(char* filename){
 			res = min_score[end.y][end.x][dir];
 		}
 	}
+	free(front.data);
+	free(next_front.data);
 	printf("result: %d\n", res);
 	string_list_clean(&lines);
 	free(lines.data);
@@ -243,6 +245,9 @@ void day16part2(char* filename){
 		next_front = tmp;
 		next_front.len = 0;
 	}
+	free(on_path.data);
+	free(front.data);
+	free(next_front.data);
 	printf("result: %ld\n", on_path.len);
 	string_list_clean(&lines);
 	free(lines.data);

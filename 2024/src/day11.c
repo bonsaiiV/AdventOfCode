@@ -15,7 +15,6 @@ static void get_input(FILE* fp, long_list* list) {
 	tok = strtok(line, " ");
 	do {
 		long_list_insert(list, atol(tok));
-		line = calloc(last_line_len, sizeof(char));
 	} while ((tok = strtok(0, " ")));
 	free(line);
 }
@@ -118,14 +117,13 @@ void day11part2(char* filename){
 	if (getline(&line, &last_line_len, fp) == -1) {
 		printf("error reading input\n");
 	}
+	fclose(fp);
 	tok = strtok(line, " ");
 	do {
 		helper.val = atol(tok); helper.count = 1;
 		add_to_stone_set(&stones, helper);
-		line = calloc(last_line_len, sizeof(char));
 	} while ((tok = strtok(0, " ")));
 	free(line);
-	fclose(fp);
 	for (i = 0; i < 75; i++) {
 		get_next_from_stone_set(&stones, 0);
 		while (!get_next_from_stone_set(0, &a)) {
@@ -162,6 +160,7 @@ void day11part2(char* filename){
 		next_stones = tmp;
 		empty_stone_set(&next_stones);
 	}
+	clean_stone_set(&next_stones);
 	printf("max bucket: %ld\n", stone_max_bucket(&stones));
 	long long res = sum_stone_set(&stones);
 	printf("result: %lld\n", res);

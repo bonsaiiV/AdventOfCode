@@ -39,7 +39,7 @@ static size_t count_##type##_set( type##_set* set) { size_t i; size_t count = 0;
 static void empty_##type##_set( type##_set* set) { size_t i;\
 	for (i = 0; i < set->bucket_count; i++) { set->buckets[i].len = 0; } }\
 static void clean_##type##_set( type##_set* set) { size_t i;\
-	for (i = 0; i < set->bucket_count; i++) { free(set->buckets[i].data); } }\
+	for (i = 0; i < set->bucket_count; i++) { free(set->buckets[i].data); } free(set->buckets); }\
 static int get_next_from_##type##_set( type##_set* in_set, type * ret) { static type##_set* set = 0;\
 	if (in_set) { set = in_set; return 1; }\
 	if (!set || !ret) return -1;\

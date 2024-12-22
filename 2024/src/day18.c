@@ -88,6 +88,7 @@ void day18part1(char* filename){
 	}
 	print_mem(memory, size);
 	printf("result: %d\n", memory[size.x * size.y - 1]);
+	free(memory);
 	free(bytes.data);
 	free(front.data);
 	free(next_front.data);
@@ -154,4 +155,5 @@ void day18part2(char* filename){
 	free(bytes.data);
 	free(front.data);
 	free(next_front.data);
+	free(memory);
 }

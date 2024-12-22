@@ -140,6 +140,7 @@ static void get_paths_recurse(position a, position b, position_list_list* ret){
 			for (size_t i = 0; i < dx.len; i++) {
 				position_list_list_insert(ret, dx.data[i]);
 			}
+			free(dx.data);
 		}
 	}
 }
@@ -192,7 +193,8 @@ static long get_shortest_sequence(position current, position target, int level){
 	DBG("found %ld paths\n", paths.len);
 	long sum, min = LONG_MAX;
 	position last_pos, next_pos;
-	for (size_t i = 0; i < paths.len; i++) {
+	size_t i;
+	for (i = 0; i < paths.len; i++) {
 		last_pos.x = 0;
 		last_pos.y = 0;
 		sum = 0;
@@ -202,7 +204,9 @@ static long get_shortest_sequence(position current, position target, int level){
 			last_pos = next_pos;
 		}
 		if (sum < min) min = sum;
+		free(paths.data[i].data);
 	}
+	free(paths.data);
 	if (level) DBG("length of minimal sequence from %d,%d to %d,%d is %ld\n", current.x, current.y, target.x, target.y, min);
 	if (level != max_level) set_cache(current, target, level, min);
 	return min;
@@ -255,6 +259,7 @@ void day21part1(char* filename){
 	printf("result: %ld\n", res);
 	string_list_clean(&lines);
 	free(lines.data);
+	free(cache);
 }
 void day21part2(char* filename){
 	string_list lines = string_list_create();
@@ -290,4 +295,5 @@ void day21part2(char* filename){
 	printf("result: %ld\n", res);
 	string_list_clean(&lines);
 	free(lines.data);
+	free(cache);
 }

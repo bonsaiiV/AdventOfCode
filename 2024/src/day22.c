@@ -120,6 +120,7 @@ void day22part2(char* filename){
 			}
 		}
 	}
-	printf("result: %ld\n", res);
+	free(scores);
 	free(input.data);
+	printf("result: %ld\n", res);
 }

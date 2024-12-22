@@ -104,6 +104,7 @@ void day12part1(char* filename){
 	int line_len;
 	DBG("getting input\n");
 	get_input(fp, &lines, &line_len);
+	fclose(fp);
 	int* plot_mapped = calloc(lines.len * line_len, sizeof(int));
 	int area, perimeter;
 	for (i = 0; i < lines.len; i++) {
@@ -132,28 +133,31 @@ void day12part1(char* filename){
 			res += area*perimeter;
 		}
 	}
-	fclose(fp);
-	printf("result: %d\n", res);
+	free(plot_mapped);
+	free(front.data);
 	string_list_clean(&lines);
 	free(lines.data);
+	printf("result: %d\n", res);
 }
 void day12part2(char* filename){
-	size_t i, k, a;
-	int j;
 	string_list lines = string_list_create();
-	point_list front = point_list_create();
-	fence_list fences[4];
-	for (k = 0; k < 4; k++){
-		fences[k] = fence_list_create();
-	}
-	fence tmp_fence;
 	FILE* fp = fopen(filename, "r");
-	int res = 0;
 	int line_len;
 	DBG("getting input\n");
 	get_input(fp, &lines, &line_len);
+	fclose(fp);
+
 	int* plot_mapped = calloc(lines.len * line_len, sizeof(int));
 	int area, perimeter;
+	fence tmp_fence;
+	point_list front = point_list_create();
+	fence_list fences[4];
+	size_t i, k, a;
+	int j;
+	for (k = 0; k < 4; k++){
+		fences[k] = fence_list_create();
+	}
+	int res = 0;
 	for (i = 0; i < lines.len; i++) {
 		for (j = 0; j < line_len; j++) {
 			if (plot_mapped[i * line_len + j]) continue;
@@ -198,7 +202,11 @@ void day12part2(char* filename){
 			res += area*perimeter;
 		}
 	}
-	fclose(fp);
+	for (k = 0; k < 4; k++){
+		free(fences[k].data);
+	}
+	free(plot_mapped);
+	free(front.data);
 	printf("result: %d\n", res);
 	string_list_clean(&lines);
 	free(lines.data);

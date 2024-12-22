@@ -85,11 +85,10 @@ void day19part1(char* filename){
 	}
 	printf("result: %d\n", res);
 	for (i = 0; i < targets.len; i++) {
-		//free(targets.data[i].str);
+		free(targets.data[i].str);
+		free(targets.data[i].dyn_res);
 	}
-	for (i = 0; i < available.len; i++) {
-		//free(available.data[i].str);
-	}
+	free(available.data[0].str);
 	free(targets.data);
 	free(available.data);
 }
@@ -132,11 +131,10 @@ void day19part2(char* filename){
 	}
 	printf("result: %ld\n", res);
 	for (i = 0; i < targets.len; i++) {
-		//free(targets.data[i].str);
+		free(targets.data[i].str);
+		free(targets.data[i].dyn_res);
 	}
-	for (i = 0; i < available.len; i++) {
-		//free(available.data[i].str);
-	}
+	free(available.data[0].str);
 	free(targets.data);
 	free(available.data);
 }

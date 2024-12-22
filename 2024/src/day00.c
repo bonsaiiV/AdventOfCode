@@ -49,14 +49,18 @@ void dayXXpart1(char* filename){
 	int line_len;
 	get_input(fp, &input, &line_len);
 	fclose(fp);
+
 	DBG("starting solve input\n");
 	int res = 0;
 	size_t i, j;
 	for (i = 0; i < input.len; i++) {
+		for (j = 0; j < input.len; j++) {
+		}
 	}
-	printf("result: %d\n", res);
 	string_list_clean(&input);
 	free(input.data);
+
+	printf("result: %d\n", res);
 }
 void dayXXpart2(char* filename){
 	(void) filename;

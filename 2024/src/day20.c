@@ -156,6 +156,8 @@ void day20part1(char* filename){
 			}
 		}
 	}
+	free(front.data);
+	free(next_front.data);
 	printf("result: %d\n", res);
 	string_list_clean(&lines);
 	free(lines.data);
@@ -271,6 +273,8 @@ void day20part2(char* filename){
 		next_front.len = 0;
 		dist++;
 	}
+	free(front.data);
+	free(next_front.data);
 	printf("result: %d\n", res);
 	string_list_clean(&lines);
 	free(lines.data);
