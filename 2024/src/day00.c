@@ -43,20 +43,20 @@ static void get_input(FILE* fp, string_list* list, int* line_len) {
 	free(line);
 }
 void dayXXpart1(char* filename){
-	string_list lines = string_list_create();
+	string_list input = string_list_create();
 	FILE* fp = fopen(filename, "r");
 	DBG("getting input\n");
 	int line_len;
-	get_input(fp, &lines, &line_len);
+	get_input(fp, &input, &line_len);
 	fclose(fp);
 	DBG("starting solve input\n");
-	size_t i, j;
-	for (i = 0; i < lines.len; i++) {
-	}
 	int res = 0;
+	size_t i, j;
+	for (i = 0; i < input.len; i++) {
+	}
 	printf("result: %d\n", res);
-	string_list_clean(&lines);
-	free(lines.data);
+	string_list_clean(&input);
+	free(input.data);
 }
 void dayXXpart2(char* filename){
 	(void) filename;

@@ -71,6 +71,7 @@ int main(int argc, char **argv) {
 		snprintf(input_file, 12, "input/day%ld", day);
 	}
 	snprintf(input_file+11, 2+data_file_name_len, "/%s", input_data);
+	free(input_data);
 	void (**parts) (char[]) = ((void (**) (char[])) &daymap[day-1]) + part - 1;
 	(*parts)(input_file);
 	free(input_file);
