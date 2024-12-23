@@ -78,7 +78,7 @@ void day23part1(char* filename){
 }
 void recurse_clique(string_list* addresses, edge_list* network, string_list* current_clique, string_list* best_clique, size_t min_add_index){
 	DBG("depth: %ld\n", current_clique->len);
-	int found;
+	int found = 1;
 	for (size_t i = min_add_index; i < addresses->len; i++) {
 		char* candidate = addresses->data[i];
 		for (size_t j = 0; j < current_clique->len; j++) {
@@ -158,5 +158,6 @@ void day23part2(char* filename){
 	free(network.data);
 	free(best_clique.data);
 	free(current_clique.data);
+	free(addresses.data);
 
 }
