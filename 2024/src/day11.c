@@ -83,7 +83,8 @@ void stone_list_add(stone_list* list, stone a) {
 size_t stone_hash(stone in, size_t max) {
 	return in.val % max;
 }
-HASH_MAP(stone)
+HASH_SET(stone)
+HASH_SET_CLEAN(stone)
 void unused(void) {
 	count_stone_set(0);
 }
@@ -160,9 +161,9 @@ void day11part2(char* filename){
 		next_stones = tmp;
 		empty_stone_set(&next_stones);
 	}
-	clean_stone_set(&next_stones);
+	free_stone_set(&next_stones);
 	printf("max bucket: %ld\n", stone_max_bucket(&stones));
 	long long res = sum_stone_set(&stones);
 	printf("result: %lld\n", res);
-	clean_stone_set(&stones);
+	free_stone_set(&stones);
 }

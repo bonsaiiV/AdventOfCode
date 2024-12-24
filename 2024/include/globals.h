@@ -25,22 +25,21 @@ static void T##_list_clean (struct __##T##_list *list) {\
 	}\
 	list->len = 0;\
 }
-#define HASH_MAP(type)\
-typedef struct __##type##_set { type##_list* buckets; size_t bucket_count; } type##_set;\
-static type##_set create_##type##_set(size_t number_of_buckets){ type##_set ret; size_t i;\
-	ret.buckets = calloc(number_of_buckets, sizeof( type##_list));\
+#define HASH_SET(T)\
+typedef struct __##T##_set { T##_list* buckets; size_t bucket_count; } T##_set;\
+static T##_set create_##T##_set(size_t number_of_buckets){ T##_set ret; size_t i;\
+	ret.buckets = calloc(number_of_buckets, sizeof( T##_list));\
 	ret.bucket_count = number_of_buckets;\
-	for (i = 0; i < ret.bucket_count; i++) { ret.buckets[i] = type##_list_create(); }\
+	for (i = 0; i < ret.bucket_count; i++) { ret.buckets[i] = T##_list_create(); }\
 	return ret; }\
-static void add_to_##type##_set( type##_set* set, type in) { type##_list_add(set->buckets + type##_hash(in, set->bucket_count), in); }\
-static size_t count_##type##_set( type##_set* set) { size_t i; size_t count = 0;\
+static size_t count_##T##_set( T##_set* set) { size_t i; size_t count = 0;\
 	for (i = 0; i < set->bucket_count; i++) { count += set->buckets[i].len; }\
 	return count; }\
-static void empty_##type##_set( type##_set* set) { size_t i;\
+static void empty_##T##_set( T##_set* set) { size_t i;\
 	for (i = 0; i < set->bucket_count; i++) { set->buckets[i].len = 0; } }\
-static void clean_##type##_set( type##_set* set) { size_t i;\
+static void free_##T##_set( T##_set* set) { size_t i;\
 	for (i = 0; i < set->bucket_count; i++) { free(set->buckets[i].data); } free(set->buckets); }\
-static int get_next_from_##type##_set( type##_set* in_set, type * ret) { static type##_set* set = 0;\
+static int get_next_from_##T##_set( T##_set* in_set, T * ret) { static T##_set* set = 0;\
 	if (in_set) { set = in_set; return 1; }\
 	if (!set || !ret) return -1;\
 	static size_t next_bucket = 0; static size_t next_index = 0;\
@@ -56,3 +55,5 @@ static int get_next_from_##type##_set( type##_set* in_set, type * ret) { static 
 		} else { next_index = 0; next_bucket++; }\
 	}\
 }
+#define HASH_SET_CLEAN(T)\
+static void add_to_##T##_set( T##_set* set, T in) { T##_list_add(set->buckets + T##_hash(in, set->bucket_count), in); }
