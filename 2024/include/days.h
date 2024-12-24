@@ -28,6 +28,7 @@ DECLARE(20)
 DECLARE(21)
 DECLARE(22)
 DECLARE(23)
+DECLARE(24)
 
 
 struct __attribute__((packed)) day {
@@ -59,4 +60,5 @@ struct day daymap[] = {
 	DAY_STRUCT(21), 
 	DAY_STRUCT(22), 
 	DAY_STRUCT(23), 
+	DAY_STRUCT(24), 
 };
