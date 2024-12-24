@@ -203,6 +203,17 @@ int get_wrong_bits(long a, long b) {
 	}
 	return wrong_bits;
 }
+void print_gate(gate a) {
+	if (a.operation == or) {
+		printf("%s OR %s -> %s\n", a.a.source, a.b.source, a.output_name);
+	} else if (a.operation == xor) {
+		printf("%s XOR %s -> %s\n", a.a.source, a.b.source, a.output_name);
+	} else if (a.operation == and) {
+		printf("%s AND %s -> %s\n", a.a.source, a.b.source, a.output_name);
+	} else {
+		printf("bad gate\n");
+	}
+}
 void day24part2(char* filename){
 	string_list input = string_list_create();
 	constant_list constants = constant_list_create();
@@ -212,154 +223,25 @@ void day24part2(char* filename){
 	get_input(fp, &input, &constants, &gates);
 	fclose(fp);
 
-	size_t number_of_consts = constants.len;
-	long x = const_to_l(&constants, 'x');
-	long y = const_to_l(&constants, 'y');
-	long sum = x + y;
-
 	DBG("starting to solve\n");
-	int i;
-	size_t j, k, l;
-	char* tmp;
-	int perm_valid = 1;
-	int d = dbg;
-	dbg = 0;
-	apply_logic(&constants, &gates);
-	dbg = d;
-	long res = const_to_l(&constants, 'z');
-	int base_wrong_bits = get_wrong_bits(res, sum);
-	swap_list candidates = swap_list_create();
-	for (j = 0; j < gates.len; j++) {
-		for (k = j+1; k < gates.len; k++) {
-			constants.len = number_of_consts;
-			for (l = 0; l < gates.len; l++) {
-				gates.data[l].fired = 0;
-				gates.data[l].a.filled = 0;
-				gates.data[l].b.filled = 0;
-			}
-			tmp = gates.data[j].output_name;
-			gates.data[j].output_name = gates.data[k].output_name;
-			gates.data[k].output_name = tmp;
-			int d = dbg;
-			dbg = 0;
-			apply_logic(&constants, &gates);
-			dbg = d;
-			if (get_wrong_bits(const_to_l(&constants, 'z'), sum) < base_wrong_bits) {
-				swap candidate = {j, k};
-				swap_list_insert(&candidates, candidate);
-			}
-			tmp = gates.data[j].output_name;
-			gates.data[j].output_name = gates.data[k].output_name;
-			gates.data[k].output_name = tmp;
-		}
-	}
-	for (j = 0; j < candidates.len; j++){
-		printf("candidate: %ld,%ld\n", candidates.data[j].index_a, candidates.data[j].index_b);
-	}
-	size_t_list reset_points = size_t_list_create();
-	size_t last_index_a = candidates.data[0].index_a;
-	size_t_list_insert(&reset_points, 0);
-	for (j = 0; j < candidates.len; j++) {
-		if (candidates.data[j].index_a != last_index_a) {
-			last_index_a = candidates.data[j].index_a;
-			size_t_list_insert(&reset_points, j);
-		}
-	}
-	size_t current_reset_points[4] = {0, 1, 2, 3};
-	size_t swaps[4] = {0, reset_points.data[1], reset_points.data[2], reset_points.data[3]};
-	while (res != sum) {
-		perm_valid = 1;
-		DBG("\ngate count: %ld\n", gates.len);
-		DBG("swap indexes: ");
-		for (i = 0; i < 4; i++) {
-			swap candidate1 = {candidates.data[swaps[i]].index_a, candidates.data[swaps[i]].index_b};
-			DBG("%ld, ", candidate1.index_a);
-			DBG("%ld, ", candidate1.index_b);
-			for ( j = i+1; j < 4; j++) {
-				swap candidate2 = {candidates.data[swaps[j]].index_a, candidates.data[swaps[j]].index_b};
-				if ( candidate1.index_a == candidate2.index_a || 
-					candidate1.index_b == candidate2.index_b || 
-					candidate1.index_a == candidate2.index_b || 
-					candidate1.index_b == candidate2.index_a ) {
-					perm_valid = 0;
+	gate current_gate;
+	char* var;
+	size_t i, j;
+	// actually solved it on paper but this helped for queries
+	for (i = 0; i < gates.len; i++) {
+		current_gate = gates.data[i];
+		if (current_gate.operation == xor) {
+			if (!(*current_gate.a.source == 'x' || *current_gate.b.source == 'x')) continue;
+			var = current_gate.output_name;
+			printf("%s\n", var);
+			for (j = 0; j < gates.len; j++) {
+				if (!strcmp(gates.data[j].a.source, var)) {
+					print_gate(gates.data[j]);
+				}
+				if (!strcmp(gates.data[j].b.source, var)) {
+					print_gate(gates.data[j]);
 				}
 			}
-		}
-		DBG("\n");
-		if (perm_valid) {
-			//swap
-			for (i = 0; i < 4; i++) {
-				swap candidate = candidates.data[swaps[i]];
-				tmp = gates.data[candidate.index_a].output_name;
-				gates.data[candidate.index_a].output_name = gates.data[candidate.index_b].output_name;
-				gates.data[candidate.index_b].output_name = tmp;
-			}
-
-			//calculate permutation without dbg
-			int d = dbg;
-			dbg = 0;
-			apply_logic(&constants, &gates);
-			dbg = d;
-			//check permutation
-			res = const_to_l(&constants, 'z');
-			if (sum == res) {
-				string_list swaped = string_list_create();
-				for (i = 0; i < 4; i++) {
-					string_list_insert(&swaped, gates.data[candidates.data[swaps[i]].index_a].output_name);
-					string_list_insert(&swaped, gates.data[candidates.data[swaps[i]].index_b].output_name);
-				}
-				qsort(swaped.data, 8, sizeof(char*), varcmp);
-				for (i = 0; i < 8; i++) {
-					printf("%s,", swaped.data[i]); 
-				}
-				printf("\n");
-				break;
-			}
-
-			//unswap
-			for (i = 0; i < 4; i++) {
-				swap candidate = candidates.data[swaps[i]];
-				tmp = gates.data[candidate.index_a].output_name;
-				gates.data[candidate.index_a].output_name = gates.data[candidate.index_b].output_name;
-				gates.data[candidate.index_b].output_name = tmp;
-			}
-
-			//reset
-			constants.len = number_of_consts;
-			for (l = 0; l < gates.len; l++) {
-				gates.data[l].fired = 0;
-				gates.data[l].a.filled = 0;
-				gates.data[l].b.filled = 0;
-			}
-		}
-		//get next permutation
-		i = 3;
-		while (i >= 0) {
-			DBG("%d\n", i);
-			swaps[i]++;
-			if (i != 3 && swaps[i] == reset_points.data[i+1]) {
-				reset_points.data[i+1] += 1;
-			}
-			if (i == 3) {
-				if (swaps[i] == candidates.len) {
-					i--;
-				} else {
-					break;
-				}
-			} else if (swaps[i] == reset_points.data[reset_points.len - 3 + i]) {
-				i--;
-			} else {
-				break;
-			}
-		}
-		DBG("i: %d\n", i);
-		if (i < 0) {
-			printf("no solution found\n");
-			break;
-		}
-		while (++i < 4) {
-			swaps[i] = reset_points.data[current_reset_points[i]];
-			current_reset_points[i+1] = current_reset_points[i+1];
 		}
 	}
 
