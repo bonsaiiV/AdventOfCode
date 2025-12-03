@@ -1,6 +1,7 @@
 */target/
 */resources/
 */input/
+*/.cache/
 flamegraph.svg
 perf.data
 perf.data.old
