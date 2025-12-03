@@ -4,7 +4,7 @@
 #include "lib/list.h"
 
 
-list * get_input(char * filename) {
+static list * get_input(char * filename) {
 	FILE * fp = fopen(filename, "r");
 	if (!fp) {
 		fprintf(stderr, "could not open file %s\n", filename);
