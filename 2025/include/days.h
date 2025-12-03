@@ -7,6 +7,7 @@ void day##DAY_NR##part2(char* filename);
 
 DECLARE(01)
 DECLARE(02)
+DECLARE(03)
 
 struct __attribute__((packed)) day {
 	void (*part1) (char input[]);
@@ -16,4 +17,5 @@ struct __attribute__((packed)) day {
 struct day daymap[] = {
 	DAY_STRUCT(01), 
 	DAY_STRUCT(02), 
+	DAY_STRUCT(03), 
 };
