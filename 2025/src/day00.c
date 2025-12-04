@@ -3,7 +3,7 @@
 #include <string.h>
 #include "lib/list.h"
 
-list * get_input(char * filename) {
+static list * get_input(char * filename) {
 	FILE * fp = fopen(filename, "r");
 	list * ret = create_list();
 	size_t last_line_len = 8;
@@ -20,7 +20,11 @@ list * get_input(char * filename) {
 	return ret;
 }
 void dayXXpart1(char* filename){
+	size_t res = 0;
 	list * input = get_input(filename);
+
+	list_free(input);
+	printf("result: %ld\n", res);
 }
 void dayXXpart2(char* filename){
 	(void) filename;

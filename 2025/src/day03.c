@@ -3,7 +3,7 @@
 #include <string.h>
 #include "lib/list.h"
 
-list * get_input(char * filename) {
+static list * get_input(char * filename) {
 	FILE * fp = fopen(filename, "r");
 	list * ret = create_list();
 	size_t last_line_len = 8;
