@@ -9,6 +9,7 @@ DECLARE(01)
 DECLARE(02)
 DECLARE(03)
 DECLARE(04)
+DECLARE(05)
 
 struct __attribute__((packed)) day {
 	void (*part1) (char input[]);
@@ -20,4 +21,5 @@ struct day daymap[] = {
 	DAY_STRUCT(02), 
 	DAY_STRUCT(03), 
 	DAY_STRUCT(04), 
+	DAY_STRUCT(05), 
 };
