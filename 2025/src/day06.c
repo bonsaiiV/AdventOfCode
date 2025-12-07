@@ -62,15 +62,11 @@ void day06part1(char* filename){
 	printf("result: %ld\n", res);
 }
 void day06part2(char* filename){
-	size_t res = 0, column_res = 0;
-	list * input = get_input(filename);
-	char ** sv_ptrs = calloc(input->size, sizeof(char *));
+	size_t res = 0, column_res;
+	size_t nums[5], num_i;
 	char op;
-	size_t nums[5];
-	ssize_t line_len = strlen(input->data[0]);
-	ssize_t cur_i = line_len-2;
-
-	int num_i;
+	list * input = get_input(filename);
+	ssize_t cur_i = strlen(input->data[0]) - 2;
 	while(cur_i > 0) {
 		num_i = 0;
 		do {
@@ -83,21 +79,21 @@ void day06part2(char* filename){
 			}
 			num_i++;
 		} while((op = ((char *) input->data[input->size-1])[cur_i--]) == ' ');
+
 		cur_i--;
 		if (op == '+') {
 			column_res = 0;
-			for (int i = 0; i < num_i; i++) {
+			for (size_t i = 0; i < num_i; i++) {
 				column_res += nums[i];
 			}
 		} else {
 			column_res = 1;
-			for (int i = 0; i < num_i; i++) {
+			for (size_t i = 0; i < num_i; i++) {
 				column_res *= nums[i];
 			}
 		}
 		res += column_res;
 	}
 	list_free(input);
-	free(sv_ptrs);
 	printf("result: %ld\n", res);
 }
