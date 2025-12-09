@@ -4,9 +4,13 @@
 
 static int get_input(char* filename, int** ret_a, int** ret_b){
 	size_t len = 0, cap = 8;
+	FILE* fp;
+	if ((fp = fopen(filename, "r")) == NULL) {
+		perror("could not open inputfile");
+		exit(1);
+	}
 	int* new_a, *a = calloc(cap, sizeof(int));
 	int* new_b, *b = calloc(cap, sizeof(int));
-	FILE* fp = fopen(filename, "r");
 	while (fscanf(fp, "%d\t%d\n ", a + len, b + len) == 2) {
 		if (++len == cap){
 			cap *= 2;

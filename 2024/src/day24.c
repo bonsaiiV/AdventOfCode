@@ -21,14 +21,8 @@ typedef struct _constant{
 	int val;
 	char* name;
 } constant;
-typedef struct _swap {
-	size_t index_a;
-	size_t index_b;
-} swap;
-LIST(swap)
 LIST(constant)
 LIST(gate)
-LIST(size_t)
 typedef char* string;
 LIST(string)
 LIST_CLEAN(string)
