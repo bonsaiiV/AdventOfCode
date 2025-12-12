@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lib/list.h"
+#include "data/list.h"
 
 typedef struct {
 	ssize_t x, y;

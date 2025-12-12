@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lib/list.h"
+#include "data/list.h"
 
 static list * get_input(char * filename) {
 	FILE * fp = fopen(filename, "r");
@@ -36,17 +36,17 @@ void day11part1(char* filename){
 		line = input->data[n_id];
 		cur = all_nodes + n_id;
 		cur->n_ids = create_list();
-		if (!strncmp(line, "fft", 3)) {
+		if (!strncmp(line, "you", 3)) {
 			start = cur;
 		}
 		tok = strtok(line, " ");
 		while ((tok = strtok(NULL, " "))) {
-			if (!strncmp(tok, "dac", 3)) {
+			if (!strncmp(tok, "out", 3)) {
 				list_push(cur->n_ids, OUT_NODE);
 			}
 			LIST_FOR_EACH(node_name, input) {
 				if (!strncmp(node_name, tok, 3)) {
-					list_push(cur->n_ids, all_nodes + node_name_vi);
+					list_push(cur->n_ids, all_nodes + loop.i);
 				}
 			}
 		}
@@ -99,7 +99,7 @@ void day11part2(char* filename){
 			}
 			LIST_FOR_EACH(node_name, input) {
 				if (!strncmp(node_name, tok, 3)) {
-					list_push(cur->n_ids, all_nodes + node_name_vi);
+					list_push(cur->n_ids, all_nodes + loop.i);
 				}
 			}
 		}

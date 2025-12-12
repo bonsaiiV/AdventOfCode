@@ -7,9 +7,12 @@ subdir('src')
 
 cc = meson.get_compiler('c')
 lib_m = cc.find_library('m', required : false)
+lib_data = cc.find_library('my_lib', required : true)
+#lib_data = dependency('data', required : true)
 
 exe = executable('aoc',
   ['main.c', sources],
   include_directories : [include_dir],
-  dependencies : [lib_m],
-  link_with : [lib_data])
+  dependencies : [lib_m, lib_data],
+  #link_with : [lib_data],
+)

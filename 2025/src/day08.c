@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "lib/list.h"
+#include "data/list.h"
 
 typedef struct _vertex {
 	ssize_t x, y, z;
