@@ -7,7 +7,7 @@ static list * get_input(char * filename) {
 	FILE * fp = fopen(filename, "r");
 	list * ret = create_list();
 	size_t last_line_len = 8;
-	char* line = calloc(last_line_len, sizeof(char));
+	char * line = calloc(last_line_len, sizeof(char));
 	int chars_read;
 	while ((chars_read = getline(&line, &last_line_len, fp)) != -1) {
 		if (!strcmp(line, "\n")){

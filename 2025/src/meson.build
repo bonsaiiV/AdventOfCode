@@ -10,4 +10,6 @@ sources = [
   'src/day07.c',
   'src/day08.c',
   'src/day09.c',
+  'src/day10.c',
+  'src/day11.c',
 ]
